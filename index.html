@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Mi carrito</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <style type="text/css">
+			/*Declaro selector de clase para manejar los estilos de las filas de la pagina*/
+		.row {padding-bottom: 20px;}
+		
+		   /*Declaro selector de clase para manejar el estilo del enlace*/
+        .imagen {
+		    min-width: 50px;
+            min-height: 80px;
+            /* background-color: #eee; */
+            padding: 20px; 
+            margin: 10px;
+			align:center;
+        }
+			/*Declaro selector de elemento para manejar el full responsive*/
+		body {max-width:800px}
+			/*Declaro selector de elemento para modelar el estilo de los agregar imagenes */
+		h4{color:blue; padding-bottom: 10px;}
+     
+		
+    </style>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+    <script src="http://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+            crossorigin="anonymous"></script>
+    <script>
+
+        $(document).ready(function () {
+            console.log("cargado...");
+
+
+            $('.box').on('click', function (e) {
+				e.preventDefault();
+                var boxId = $(this).data('id'); //capturo el botón que se clickea para luego operar con el sobre ajax
+                console.log('Enviando ..', boxId);
+                $.ajax({
+                            // En data puedes utilizar un objeto JSON, un array o un query string
+                            data: { "number": boxId },
+                            //Cambiar a type: POST si necesario
+                            type: "POST",
+							
+                            dataType: 'json',
+                            // URL a la que se enviará la solicitud Ajax
+                            url: "response.php",
+							beforeSend:function(xhr){
+								console.log("Esperando datos...",boxId);
+							}
+                        })
+                        .done(function (data, textStatus, jqXHR) {
+                            console.log("La solicitud se ha completado correctamente.");
+                            $('.resp-box').html(data[0]);
+                            $('.resp-content').html(data[1]);
+
+                        })
+                        .fail(function (jqXHR, textStatus, errorThrown) {
+                            if (console && console.log) {
+                                console.log("La solicitud ha fallado: " + textStatus);
+                            }
+                        })
+
+            });
+			
+			$('.addImage').click(function(){
+			     
+				var boxId = $(this).parent().attr('id');//capturo los div(enlaces que me agregan imagenes) para luego operar con ellos
+                console.log('Enviando ..', boxId);
+				$.ajax({
+						// En data puedes utilizar un objeto JSON, un array o un query string
+						data: { "number": 1 },
+						//Cambiar a type: POST si necesario
+						type: "POST",
+						
+						dataType: 'json',
+						// URL a la que se enviará la solicitud Ajax
+						url: "response.php",
+						beforeSend:function(xhr){
+						//en el estado de ajax antes de enviar pongo el gif como que está cargando
+						  $('#'+boxId).html('<img src="loading1.gif"  min-width: 50px;min-height: 80px; margin: 10px;/>');
+						  
+						
+							
+						}
+					})
+					.done(function (data, textStatus, jqXHR) {
+					    setTimeout(function() {
+						$('#'+boxId).html('<img src="imagen.jpg" width:30px; height:30px/>');
+					    }, 3000); //asigno el tiempo a esperar hasta que se cargue la foto, en este caso son 3 segundos.
+					})
+					.fail(function (jqXHR, textStatus, errorThrown) {
+						if (console && console.log) {
+							console.log("La solicitud ha fallado: " + textStatus);
+						}
+					})
+			});
+			
+        });
+    </script>
+
+</head>
+
+
+<div class="container" class="img-responsive" >
+    <h1>Describi tu producto</h1>
+    <h3>Imagenes del producto</h3>
+
+    <div class="row imagenes">
+        <div class="col-md-2 imagen" id="image1">
+            <a class="addImage" href="#" >
+                <div> <h4><img src="fondoCamara.jpg"> </img>  <h4> </div>
+            </a>
+        </div>
+        <div class="col-md-2 imagen" id="image2">
+            <a class="addImage" href="#">
+                <div><h4> <img src="fondoCamara.jpg"> </img> <h4></div>
+            </a>
+        </div>
+        <div class="col-md-2 imagen" id="image3">
+            <a class="addImage" href="#">
+                <div><h4><img src="fondoCamara.jpg"> </img>  <h4></div>
+            </a>
+        </div>
+        <div class="col-md-2 imagen" id="image4">
+            <a class="addImage" href="#">
+                <div> <h4><img src="fondoCamara.jpg"> </img>  <h4></div>
+            </a>
+        </div>
+        <div class="col-md-2 imagen" id="image5">
+            <a class="addImage" href="#">
+                <div> <h4> <img src="fondoCamara.jpg"> </img>  <h4></div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <span>  <img src="colocaVideoYoutube.jpg"> </img> </span> <input type="url"  value="http://" size=50 name="youtube">
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <a class="btn btn-default box" href="#" role="button" data-id="1">
+                <div> <img src="box1.jpg"> </img> </div>
+            </a>
+            <div class="response"></div>
+        </div>
+        <div class="col-md-4">
+            <a class="btn btn-default box" href="#" role="button" data-id="2">
+                <div> <img src="box2.jpg"> </img></div>
+            </a>
+            <div class="response"></div>
+        </div>
+        <div class="col-md-4">
+            <a class="btn btn-default box" href="#" role="button" data-id="3">
+                <div><img src="box3.jpg"> </img></div>
+            </a>
+            <div class="response"></div>
+        </div>
+    </div>
+
+
+    <div class="row">
+<h1 class="resp-box"></h1>
+<div class="resp-content"></div>
+
+     </div>
+    <hr>
+
+    <footer>
+        <p>© 2017 Company, Inc.</p>
+    </footer>
+</div>
+
+</html>
